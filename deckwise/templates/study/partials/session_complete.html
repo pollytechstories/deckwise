@@ -1,0 +1,10 @@
+<article class="study-complete">
+    <header>
+        <h3>Session Complete!</h3>
+    </header>
+    <p>You've reviewed all due cards in this deck.</p>
+    <div class="grid">
+        <a href="{{ url_for('decks.view_deck', deck_id=deck.id) }}" role="button" class="outline">Back to Deck</a>
+        <a href="{{ url_for('decks.dashboard') }}" role="button">Dashboard</a>
+    </div>
+</article>

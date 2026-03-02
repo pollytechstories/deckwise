@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Import Cards — {{ deck.name }} — DeckWise{% endblock %}
+
+{% block content %}
+<hgroup>
+    <h2>Import Cards</h2>
+    <p>
+        Into <strong>{{ deck.name }}</strong> |
+        <a href="{{ url_for('decks.view_deck', deck_id=deck.id) }}">Back to Deck</a>
+    </p>
+</hgroup>
+
+<article>
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="json_text">Paste JSON</label>
+        <textarea id="json_text" name="json_text" rows="12"
+                  placeholder='{"cards": [{"front": "Question?", "back": "Answer with **markdown**"}]}'></textarea>
+
+        <p><strong>— or —</strong></p>
+
+        <label for="file">Upload .json file</label>
+        <input type="file" id="file" name="file" accept=".json,application/json">
+
+        <button type="submit">Import</button>
+    </form>
+</article>
+
+<article>
+    <header><h3>Expected Format</h3></header>
+    <pre><code>{
+  "cards": [
+    {
+      "front": "What is a closure?",
+      "back": "A function that captures variables from its enclosing scope.\n\n```python\ndef make_adder(n):\n    return lambda x: x + n\n```"
+    }
+  ]
+}</code></pre>
+    <ul>
+        <li>Both <code>front</code> and <code>back</code> support Markdown with code blocks</li>
+        <li>Maximum 1000 cards per import</li>
+        <li>Maximum 5MB file size</li>
+        <li>Invalid cards are skipped with error details</li>
+    </ul>
+</article>
+{% endblock %}

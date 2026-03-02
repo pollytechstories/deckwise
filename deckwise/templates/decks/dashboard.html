@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — DeckWise{% endblock %}
+
+{% block content %}
+<hgroup>
+    <h2>Your Decks</h2>
+    <p>Create a deck and start studying</p>
+</hgroup>
+
+<form method="post" action="{{ url_for('decks.new_deck') }}" class="grid" style="align-items: end;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div>
+        <input type="text" name="name" placeholder="New deck name..." required>
+    </div>
+    <div>
+        <button type="submit">Create Deck</button>
+    </div>
+</form>
+
+{% if deck_stats %}
+<div class="overflow-auto">
+    <table>
+        <thead>
+            <tr>
+                <th>Deck</th>
+                <th>Cards</th>
+                <th>Due</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in deck_stats %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('decks.view_deck', deck_id=stat.deck.id) }}">
+                        <strong>{{ stat.deck.name }}</strong>
+                    </a>
+                </td>
+                <td>{{ stat.total }}</td>
+                <td>
+                    {% if stat.due > 0 %}
+                    <mark>{{ stat.due }}</mark>
+                    {% else %}
+                    0
+                    {% endif %}
+                </td>
+                <td class="deck-actions">
+                    {% if stat.due > 0 %}
+                    <a href="{{ url_for('study.session', deck_id=stat.deck.id) }}" role="button" class="btn-sm">Study</a>
+                    {% endif %}
+                    <details class="dropdown btn-sm">
+                        <summary role="button" class="outline secondary btn-sm">More</summary>
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('decks.view_deck', deck_id=stat.deck.id) }}">View Cards</a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('decks.import_cards', deck_id=stat.deck.id) }}">Import Cards</a>
+                            </li>
+                            <li>
+                                <a href="#" onclick="event.preventDefault(); if(confirm('Rename deck?')) { let n = prompt('New name:', '{{ stat.deck.name }}'); if(n) { let f = document.getElementById('rename-{{ stat.deck.id }}'); f.querySelector('input[name=name]').value = n; f.submit(); } }">Rename</a>
+                                <form id="rename-{{ stat.deck.id }}" method="post" action="{{ url_for('decks.rename_deck', deck_id=stat.deck.id) }}" style="display:none">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="name">
+                                </form>
+                            </li>
+                            <li>
+                                <form method="post" action="{{ url_for('decks.delete_deck', deck_id=stat.deck.id) }}" onsubmit="return confirm('Delete this deck and all its cards?')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="outline secondary" style="border:none; padding: 0.25rem 0.5rem;">Delete</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </details>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No decks yet. Create your first deck above!</p>
+{% endif %}
+{% endblock %}

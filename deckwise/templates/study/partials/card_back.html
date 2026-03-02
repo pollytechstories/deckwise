@@ -1,0 +1,48 @@
+<article class="study-card">
+    <header>
+        <small>{{ remaining }} card(s) remaining</small>
+    </header>
+    <div class="card-front">
+        {{ card.front | markdown }}
+    </div>
+    <hr>
+    <div class="card-back">
+        {{ card.back | markdown }}
+    </div>
+    <footer>
+        <div class="rating-grid">
+            <button class="rating-btn rating-again"
+                    hx-post="{{ url_for('study.rate', deck_id=deck.id, card_id=card.id) }}"
+                    hx-vals='{"quality": "1"}'
+                    hx-target="#study-area"
+                    hx-swap="innerHTML transition:true"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+                Again
+            </button>
+            <button class="rating-btn rating-hard"
+                    hx-post="{{ url_for('study.rate', deck_id=deck.id, card_id=card.id) }}"
+                    hx-vals='{"quality": "2"}'
+                    hx-target="#study-area"
+                    hx-swap="innerHTML transition:true"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+                Hard
+            </button>
+            <button class="rating-btn rating-good"
+                    hx-post="{{ url_for('study.rate', deck_id=deck.id, card_id=card.id) }}"
+                    hx-vals='{"quality": "3"}'
+                    hx-target="#study-area"
+                    hx-swap="innerHTML transition:true"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+                Good
+            </button>
+            <button class="rating-btn rating-easy"
+                    hx-post="{{ url_for('study.rate', deck_id=deck.id, card_id=card.id) }}"
+                    hx-vals='{"quality": "5"}'
+                    hx-target="#study-area"
+                    hx-swap="innerHTML transition:true"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+                Easy
+            </button>
+        </div>
+    </footer>
+</article>

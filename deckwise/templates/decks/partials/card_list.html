@@ -1,0 +1,9 @@
+{% if cards %}
+{% for card in cards %}
+<div id="card-{{ card.id }}">
+    {% include "decks/partials/card_row.html" %}
+</div>
+{% endfor %}
+{% else %}
+<p>No cards in this deck yet.</p>
+{% endif %}

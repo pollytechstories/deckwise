@@ -1,0 +1,16 @@
+<article class="study-card">
+    <header>
+        <small>{{ remaining }} card(s) remaining</small>
+    </header>
+    <div class="card-front">
+        {{ card.front | markdown }}
+    </div>
+    <footer>
+        <button hx-post="{{ url_for('study.reveal', deck_id=deck.id, card_id=card.id) }}"
+                hx-target="#study-area"
+                hx-swap="innerHTML transition:true"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+            Show Answer
+        </button>
+    </footer>
+</article>

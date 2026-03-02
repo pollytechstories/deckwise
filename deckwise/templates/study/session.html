@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Study {{ deck.name }} — DeckWise{% endblock %}
+
+{% block content %}
+<hgroup>
+    <h2>Study: {{ deck.name }}</h2>
+    <p><a href="{{ url_for('decks.view_deck', deck_id=deck.id) }}">Back to Deck</a></p>
+</hgroup>
+
+<div id="study-area"
+     hx-get="{{ url_for('study.next_card', deck_id=deck.id) }}"
+     hx-trigger="load"
+     hx-swap="innerHTML transition:true">
+    <article aria-busy="true">Loading cards...</article>
+</div>
+{% endblock %}

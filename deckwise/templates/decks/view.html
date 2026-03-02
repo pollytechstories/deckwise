@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ deck.name }} — DeckWise{% endblock %}
+
+{% block content %}
+<hgroup>
+    <h2>{{ deck.name }}</h2>
+    <p>
+        {{ cards|length }} card(s)
+        <a href="{{ url_for('decks.dashboard') }}">Back to Dashboard</a>
+        | <a href="{{ url_for('decks.import_cards', deck_id=deck.id) }}">Import Cards</a>
+        {% if due_count > 0 %}
+        | <a href="{{ url_for('study.session', deck_id=deck.id) }}">Study ({{ due_count }} due)</a>
+        {% endif %}
+    </p>
+</hgroup>
+
+<details>
+    <summary role="button" class="outline">Add New Card</summary>
+    <form method="post" action="{{ url_for('decks.new_card', deck_id=deck.id) }}"
+          hx-post="{{ url_for('decks.new_card', deck_id=deck.id) }}"
+          hx-target="#card-list"
+          hx-swap="innerHTML"
+          hx-on::after-request="if(event.detail.successful) this.reset()">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="front">Front (supports Markdown)</label>
+        <textarea id="front" name="front" rows="4" required></textarea>
+        <label for="back">Back (supports Markdown)</label>
+        <textarea id="back" name="back" rows="6" required></textarea>
+        <button type="submit">Add Card</button>
+    </form>
+</details>
+
+<div id="card-list">
+    {% include "decks/partials/card_list.html" %}
+</div>
+{% endblock %}

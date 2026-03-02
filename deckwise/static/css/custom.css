@@ -1,0 +1,88 @@
+/* Flash messages */
+.flash-success { background: var(--pico-ins-color); padding: 1rem; margin-bottom: 1rem; border-radius: var(--pico-border-radius); }
+.flash-error { background: var(--pico-del-color); padding: 1rem; margin-bottom: 1rem; border-radius: var(--pico-border-radius); }
+.flash-info { background: var(--pico-mark-background-color); padding: 1rem; margin-bottom: 1rem; border-radius: var(--pico-border-radius); }
+
+/* Small buttons */
+.btn-sm { padding: 0.25rem 0.75rem; font-size: 0.875rem; }
+
+/* Deck actions */
+.deck-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+
+/* Card content in deck view */
+.card-content { overflow-x: auto; }
+.card-side { margin: 0.5rem 0; }
+.card-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.card-meta { color: var(--pico-muted-color); }
+
+/* Code blocks inside cards */
+.codehilite { border-radius: var(--pico-border-radius); padding: 1rem; overflow-x: auto; margin: 0.5rem 0; }
+.codehilite pre { margin: 0; white-space: pre; }
+
+/* Study card */
+.study-card { min-height: 300px; display: flex; flex-direction: column; }
+.study-card > div { flex: 1; }
+.study-card footer { margin-top: auto; }
+
+.card-front, .card-back {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding: 0.5rem 0;
+}
+
+/* Rating buttons */
+.rating-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.rating-btn {
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.rating-again { background: #e74c3c; color: white; }
+.rating-again:hover { background: #c0392b; color: white; }
+.rating-hard { background: #e67e22; color: white; }
+.rating-hard:hover { background: #d35400; color: white; }
+.rating-good { background: #3498db; color: white; }
+.rating-good:hover { background: #2980b9; color: white; }
+.rating-easy { background: #2ecc71; color: white; }
+.rating-easy:hover { background: #27ae60; color: white; }
+
+/* Study area transitions */
+#study-area {
+    transition: opacity 0.2s ease-in-out;
+}
+#study-area.htmx-swapping {
+    opacity: 0;
+}
+
+/* Session complete */
+.study-complete { text-align: center; padding: 2rem; }
+
+/* Mobile tweaks */
+@media (max-width: 576px) {
+    .rating-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .deck-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        gap: 0.25rem;
+    }
+}
+
+/* Tables responsive */
+.overflow-auto { overflow-x: auto; }

@@ -1,0 +1,32 @@
+<article>
+    <div class="card-content">
+        <div class="card-side">
+            <small><strong>Front</strong></small>
+            <div>{{ card.front | markdown }}</div>
+        </div>
+        <hr>
+        <div class="card-side">
+            <small><strong>Back</strong></small>
+            <div>{{ card.back | markdown }}</div>
+        </div>
+    </div>
+    <footer class="card-actions">
+        <small class="card-meta">
+            EF: {{ "%.1f"|format(card.ease_factor) }} |
+            Interval: {{ card.interval }}d |
+            Reps: {{ card.repetitions }}
+        </small>
+        <div>
+            <button class="outline btn-sm"
+                    hx-get="{{ url_for('decks.edit_card', deck_id=deck.id, card_id=card.id) }}"
+                    hx-target="#card-{{ card.id }}"
+                    hx-swap="innerHTML">Edit</button>
+            <button class="outline secondary btn-sm"
+                    hx-post="{{ url_for('decks.delete_card', deck_id=deck.id, card_id=card.id) }}"
+                    hx-target="#card-{{ card.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Delete this card?"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>Delete</button>
+        </div>
+    </footer>
+</article>

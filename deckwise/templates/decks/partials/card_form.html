@@ -1,0 +1,20 @@
+<article>
+    <form hx-post="{{ url_for('decks.edit_card', deck_id=deck.id, card_id=card.id) }}"
+          hx-target="#card-{{ card.id }}"
+          hx-swap="innerHTML">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="front-{{ card.id }}">Front</label>
+        <textarea id="front-{{ card.id }}" name="front" rows="4" required>{{ card.front }}</textarea>
+        <label for="back-{{ card.id }}">Back</label>
+        <textarea id="back-{{ card.id }}" name="back" rows="6" required>{{ card.back }}</textarea>
+        <div class="grid">
+            <button type="submit">Save</button>
+            <button type="button" class="outline secondary"
+                    hx-get="{{ url_for('decks.edit_card', deck_id=deck.id, card_id=card.id) }}"
+                    hx-target="#card-{{ card.id }}"
+                    hx-swap="innerHTML"
+                    hx-trigger="click"
+                    onclick="htmx.ajax('GET', '{{ url_for('decks.view_deck', deck_id=deck.id) }}', {target:'#card-list', swap:'innerHTML'})">Cancel</button>
+        </div>
+    </form>
+</article>
