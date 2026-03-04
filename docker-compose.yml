@@ -1,0 +1,15 @@
+services:
+  deckwise:
+    image: ghcr.io/pollytechstories/deckwise:latest
+    container_name: deckwise
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - deckwise_data:/app/instance
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      # DATABASE_URI defaults to sqlite:///deckwise.db → instance/deckwise.db (no override needed)
+
+volumes:
+  deckwise_data:
