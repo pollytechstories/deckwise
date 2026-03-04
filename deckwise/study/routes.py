@@ -20,7 +20,7 @@ def get_next_due_card(deck_id):
     now = datetime.utcnow()
     return (
         Card.query
-        .filter(Card.deck_id == deck_id, Card.next_review <= now)
+        .filter(Card.deck_id == deck_id, Card.next_review <= now, Card.suspended == False)
         .order_by(Card.next_review)
         .first()
     )
@@ -28,7 +28,7 @@ def get_next_due_card(deck_id):
 
 def count_due_cards(deck_id):
     now = datetime.utcnow()
-    return Card.query.filter(Card.deck_id == deck_id, Card.next_review <= now).count()
+    return Card.query.filter(Card.deck_id == deck_id, Card.next_review <= now, Card.suspended == False).count()
 
 
 @study_bp.route("/<int:deck_id>")
@@ -114,3 +114,24 @@ def rate(deck_id, card_id):
         return render_template("study/partials/session_complete.html", deck=deck)
 
     return render_template("study/partials/card_front.html", deck=deck, card=next_card, remaining=remaining)
+
+
+@study_bp.route("/<int:deck_id>/card/<int:card_id>/suspend", methods=["POST"])
+@login_required
+def suspend_card(deck_id, card_id):
+    deck = get_deck_or_404(deck_id)
+    card = db.session.get(Card, card_id)
+    if not card or card.deck_id != deck.id:
+        abort(404)
+
+    card.suspended = True
+    db.session.commit()
+
+    # Return next card (same as rating flow)
+    next = get_next_due_card(deck.id)
+    remaining = count_due_cards(deck.id)
+
+    if not next:
+        return render_template("study/partials/session_complete.html", deck=deck)
+
+    return render_template("study/partials/card_front.html", deck=deck, card=next, remaining=remaining)

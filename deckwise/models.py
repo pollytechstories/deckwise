@@ -44,6 +44,7 @@ class Card(db.Model):
     repetitions = db.Column(db.Integer, default=0)
     next_review = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     created_at = db.Column(db.DateTime, default=lambda: datetime.utcnow())
+    suspended = db.Column(db.Boolean, default=False, nullable=False)
     updated_at = db.Column(
         db.DateTime,
         default=lambda: datetime.utcnow(),

@@ -21,6 +21,12 @@
                     hx-get="{{ url_for('decks.edit_card', deck_id=deck.id, card_id=card.id) }}"
                     hx-target="#card-{{ card.id }}"
                     hx-swap="innerHTML">Edit</button>
+            <button class="outline btn-sm btn-suspend"
+                    hx-post="{{ url_for('decks.suspend_card', deck_id=deck.id, card_id=card.id) }}"
+                    hx-target="#card-{{ card.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Suspend this card?"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>Suspend</button>
             <button class="outline secondary btn-sm"
                     hx-post="{{ url_for('decks.delete_card', deck_id=deck.id, card_id=card.id) }}"
                     hx-target="#card-{{ card.id }}"

@@ -84,5 +84,9 @@
     }
 }
 
+/* Suspended cards */
+.card-suspended { opacity: 0.6; }
+.btn-suspend { color: var(--pico-muted-color); border-color: var(--pico-muted-border-color); }
+
 /* Tables responsive */
 .overflow-auto { overflow-x: auto; }

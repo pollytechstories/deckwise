@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Suspended Cards — {{ deck.name }} — DeckWise{% endblock %}
+
+{% block content %}
+<hgroup>
+    <h2>Suspended Cards</h2>
+    <p>
+        {{ deck.name }} — {{ cards|length }} suspended card(s)
+        | <a href="{{ url_for('decks.view_deck', deck_id=deck.id) }}">Back to Deck</a>
+    </p>
+</hgroup>
+
+{% if cards %}
+{% for card in cards %}
+<div id="card-{{ card.id }}">
+    <article class="card-suspended">
+        <div class="card-content">
+            <div class="card-side">
+                <small><strong>Front</strong></small>
+                <div>{{ card.front | markdown }}</div>
+            </div>
+            <hr>
+            <div class="card-side">
+                <small><strong>Back</strong></small>
+                <div>{{ card.back | markdown }}</div>
+            </div>
+        </div>
+        <footer class="card-actions">
+            <small class="card-meta">
+                EF: {{ "%.1f"|format(card.ease_factor) }} |
+                Interval: {{ card.interval }}d |
+                Reps: {{ card.repetitions }}
+            </small>
+            <div>
+                <button class="outline btn-sm"
+                        hx-post="{{ url_for('decks.unsuspend_card', deck_id=deck.id, card_id=card.id) }}"
+                        hx-target="#card-{{ card.id }}"
+                        hx-swap="outerHTML"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>Unsuspend</button>
+            </div>
+        </footer>
+    </article>
+</div>
+{% endfor %}
+{% else %}
+<p>No suspended cards in this deck.</p>
+{% endif %}
+{% endblock %}

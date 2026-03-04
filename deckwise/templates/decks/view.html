@@ -8,6 +8,9 @@
         {{ cards|length }} card(s)
         <a href="{{ url_for('decks.dashboard') }}">Back to Dashboard</a>
         | <a href="{{ url_for('decks.import_cards', deck_id=deck.id) }}">Import Cards</a>
+        {% if suspended_count > 0 %}
+        | <a href="{{ url_for('decks.suspended_cards', deck_id=deck.id) }}">Suspended ({{ suspended_count }})</a>
+        {% endif %}
         {% if due_count > 0 %}
         | <a href="{{ url_for('study.session', deck_id=deck.id) }}">Study ({{ due_count }} due)</a>
         {% endif %}

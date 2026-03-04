@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for
+from sqlalchemy import text
 
 from config import Config
 from .extensions import db, login_manager, bcrypt, csrf
@@ -43,5 +44,13 @@ def create_app(config_class=Config):
             cursor.close()
 
         db.create_all()
+
+        # Migrate existing DBs: add suspended column if missing
+        with db.engine.connect() as conn:
+            try:
+                conn.execute(text("ALTER TABLE cards ADD COLUMN suspended BOOLEAN DEFAULT 0 NOT NULL"))
+                conn.commit()
+            except Exception:
+                pass  # Column already exists
 
     return app

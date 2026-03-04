@@ -44,5 +44,14 @@
                 Easy
             </button>
         </div>
+        <div style="text-align: center; margin-top: 0.75rem;">
+            <button class="outline btn-sm btn-suspend"
+                    hx-post="{{ url_for('study.suspend_card', deck_id=deck.id, card_id=card.id) }}"
+                    hx-target="#study-area"
+                    hx-swap="innerHTML transition:true"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token() }}"}'>
+                Suspend Card
+            </button>
+        </div>
     </footer>
 </article>

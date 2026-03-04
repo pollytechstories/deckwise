@@ -24,9 +24,11 @@ def dashboard():
     now = datetime.utcnow()
     deck_stats = []
     for deck in decks:
-        total = len(deck.cards)
-        due = sum(1 for c in deck.cards if c.next_review and c.next_review <= now)
-        deck_stats.append({"deck": deck, "total": total, "due": due})
+        active_cards = [c for c in deck.cards if not c.suspended]
+        total = len(active_cards)
+        due = sum(1 for c in active_cards if c.next_review and c.next_review <= now)
+        suspended = sum(1 for c in deck.cards if c.suspended)
+        deck_stats.append({"deck": deck, "total": total, "due": due, "suspended": suspended})
     return render_template("decks/dashboard.html", deck_stats=deck_stats)
 
 
@@ -87,10 +89,11 @@ def delete_deck(deck_id):
 @login_required
 def view_deck(deck_id):
     deck = get_deck_or_404(deck_id)
-    cards = Card.query.filter_by(deck_id=deck.id).order_by(Card.created_at.desc()).all()
+    cards = Card.query.filter_by(deck_id=deck.id, suspended=False).order_by(Card.created_at.desc()).all()
+    suspended_count = Card.query.filter_by(deck_id=deck.id, suspended=True).count()
     now = datetime.utcnow()
     due_count = sum(1 for c in cards if c.next_review and c.next_review <= now)
-    return render_template("decks/view.html", deck=deck, cards=cards, due_count=due_count)
+    return render_template("decks/view.html", deck=deck, cards=cards, due_count=due_count, suspended_count=suspended_count)
 
 
 @decks_bp.route("/<int:deck_id>/cards/new", methods=["POST"])
@@ -235,3 +238,45 @@ def import_cards(deck_id):
         return redirect(url_for("decks.view_deck", deck_id=deck.id))
 
     return render_template("decks/import.html", deck=deck)
+
+
+@decks_bp.route("/<int:deck_id>/cards/<int:card_id>/suspend", methods=["POST"])
+@login_required
+def suspend_card(deck_id, card_id):
+    deck = get_deck_or_404(deck_id)
+    card = db.session.get(Card, card_id)
+    if not card or card.deck_id != deck.id:
+        abort(404)
+
+    card.suspended = True
+    db.session.commit()
+
+    if request.headers.get("HX-Request"):
+        return ""  # Remove the row
+
+    return redirect(url_for("decks.view_deck", deck_id=deck.id))
+
+
+@decks_bp.route("/<int:deck_id>/cards/<int:card_id>/unsuspend", methods=["POST"])
+@login_required
+def unsuspend_card(deck_id, card_id):
+    deck = get_deck_or_404(deck_id)
+    card = db.session.get(Card, card_id)
+    if not card or card.deck_id != deck.id:
+        abort(404)
+
+    card.suspended = False
+    db.session.commit()
+
+    if request.headers.get("HX-Request"):
+        return ""  # Remove the row from suspended list
+
+    return redirect(url_for("decks.suspended_cards", deck_id=deck.id))
+
+
+@decks_bp.route("/<int:deck_id>/suspended")
+@login_required
+def suspended_cards(deck_id):
+    deck = get_deck_or_404(deck_id)
+    cards = Card.query.filter_by(deck_id=deck.id, suspended=True).order_by(Card.created_at.desc()).all()
+    return render_template("decks/suspended.html", deck=deck, cards=cards)
